@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 import os
 
-
+DEBUG = False
 def img_compression(input_image_address):
     img_to_compress = Image.open(input_image_address)
     img_width, img_height = img_to_compress.size
@@ -12,9 +12,10 @@ def img_compression(input_image_address):
     compressed_height = int(img_height / change_ratio)
     img_to_change = img_to_compress.resize((3000, compressed_height), Image.ANTIALIAS)
     img_compressed = cv2.cvtColor(np.asarray(img_to_change), cv2.COLOR_RGB2BGR)  # 转换为OpenCV图片格式
-    cv2.imshow('img_compressed', img_compressed)
-    cv2.waitKey(0)
-    cv2.imwrite('../Image/img_compressed_{}.jpg'.format(1), img_compressed, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
+    if DEBUG:
+        cv2.imshow('img_compressed', img_compressed)
+        cv2.waitKey(0)
+        cv2.imwrite('../Image/img_compressed_{}.jpg'.format(1), img_compressed, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
     # cv2.imwrite(target_folder + '/img_compressed.jpg', compressed_img, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
     return img_to_change, img_compressed
 
@@ -46,16 +47,18 @@ def img_segmentation(initial_raw_img):
         final_compressed_img = img_row_or_col_compress(initial_img, height_compression_ratio=20)
 
         gen_img = cv2.cvtColor(np.asarray(final_compressed_img), cv2.COLOR_RGB2BGR)  # 转换为OpenCV图片格式
-        cv2.namedWindow("gen_img", cv2.WINDOW_NORMAL)
-        cv2.imshow('gen_img', gen_img)
-        cv2.waitKey(0)
+        if DEBUG:
+            cv2.namedWindow("gen_img", cv2.WINDOW_NORMAL)
+            cv2.imshow('gen_img', gen_img)
+            cv2.waitKey(0)
 
         gray_img = cv2.cvtColor(gen_img, cv2.COLOR_BGR2GRAY)  # 转化成灰度图
         sobel = cv2.Sobel(gray_img, cv2.CV_8U, 1, 0, ksize=1)  # Sobel算子，x方向求梯度
         ret, panel_text_binary_img = cv2.threshold(sobel, 0, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)  # 二值化
-        cv2.namedWindow("panel_text_binary_img", cv2.WINDOW_NORMAL)
-        cv2.imshow('panel_text_binary_img', panel_text_binary_img)
-        cv2.waitKey(0)
+        if DEBUG:
+            cv2.namedWindow("panel_text_binary_img", cv2.WINDOW_NORMAL)
+            cv2.imshow('panel_text_binary_img', panel_text_binary_img)
+            cv2.waitKey(0)
 
         column_white_num = []  # 记录每一列的白色像素总和
 
@@ -116,18 +119,20 @@ def img_segmentation(initial_raw_img):
 
         # 再次转换为OpenCV图片格式
         img_block_two_gen_img = cv2.cvtColor(np.asarray(img_block_two_compressed_img), cv2.COLOR_RGB2BGR)
-        cv2.namedWindow("img_block_two_gen_img", cv2.WINDOW_NORMAL)
-        cv2.imshow('img_block_two_gen_img', img_block_two_gen_img)
-        cv2.waitKey(0)
+        if DEBUG:
+            cv2.namedWindow("img_block_two_gen_img", cv2.WINDOW_NORMAL)
+            cv2.imshow('img_block_two_gen_img', img_block_two_gen_img)
+            cv2.waitKey(0)
 
         img_block_two_gray_img = cv2.cvtColor(img_block_two_gen_img, cv2.COLOR_BGR2GRAY)  # 转化成灰度图
         img_block_two_sobel = cv2.Sobel(img_block_two_gray_img, cv2.CV_8U, 0, 1, ksize=5)  # Sobel算子，x方向求梯度
 
         # 二值化
         _, img_block_two_binary_img = cv2.threshold(img_block_two_sobel, 0, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)
-        cv2.namedWindow("img_block_two_binary_img", cv2.WINDOW_NORMAL)
-        cv2.imshow('img_block_two_binary_img', img_block_two_binary_img)
-        cv2.waitKey(0)
+        if DEBUG:
+            cv2.namedWindow("img_block_two_binary_img", cv2.WINDOW_NORMAL)
+            cv2.imshow('img_block_two_binary_img', img_block_two_binary_img)
+            cv2.waitKey(0)
 
         img_block_two_row_white_num = []  # 记录每一行的白色像素总和
         img_block_two_image_height = img_block_two_gen_img.shape[0]
@@ -156,12 +161,12 @@ def img_segmentation(initial_raw_img):
         img_block_two_block_two = img_block_two_input[
                                   min(img_block_two_row_index_list) + 5:max(img_block_two_row_index_list) - 5,
                                   0:img_block_two_width]
-
-        cv2.namedWindow("img_block_two_block_one", cv2.WINDOW_NORMAL)
-        cv2.imshow('img_block_two_block_one', img_block_two_block_one)
-        cv2.waitKey(0)
-        cv2.imshow('img_block_two_block_one', img_block_two_block_two)
-        cv2.waitKey(0)
+        if DEBUG:
+            cv2.namedWindow("img_block_two_block_one", cv2.WINDOW_NORMAL)
+            cv2.imshow('img_block_two_block_one', img_block_two_block_one)
+            cv2.waitKey(0)
+            cv2.imshow('img_block_two_block_one', img_block_two_block_two)
+            cv2.waitKey(0)
         return img_block_two_block_one, img_block_two_block_two
 
     def img_block_three_split(img_block_three_input):
@@ -178,9 +183,10 @@ def img_segmentation(initial_raw_img):
 
         # 再次转换为OpenCV图片格式
         img_block_three_gen_img = cv2.cvtColor(np.asarray(img_block_three_compressed_img), cv2.COLOR_RGB2BGR)
-        cv2.namedWindow("img_block_three_gen_img", cv2.WINDOW_NORMAL)
-        cv2.imshow('img_block_three_gen_img', img_block_three_gen_img)
-        cv2.waitKey(0)
+        if DEBUG:
+            cv2.namedWindow("img_block_three_gen_img", cv2.WINDOW_NORMAL)
+            cv2.imshow('img_block_three_gen_img', img_block_three_gen_img)
+            cv2.waitKey(0)
 
         img_block_three_gray_img = cv2.cvtColor(img_block_three_gen_img, cv2.COLOR_BGR2GRAY)  # 转化成灰度图
         img_block_three_sobel = cv2.Sobel(img_block_three_gray_img, cv2.CV_8U, 1, 0, ksize=7)  # Sobel算子，x方向求梯度
@@ -188,9 +194,10 @@ def img_segmentation(initial_raw_img):
         # 二值化
         _, img_block_three_binary_img = cv2.threshold(img_block_three_sobel, 0, 255,
                                                       cv2.THRESH_OTSU + cv2.THRESH_BINARY)
-        cv2.namedWindow("img_block_three_binary_img", cv2.WINDOW_NORMAL)
-        cv2.imshow('img_block_three_binary_img', img_block_three_binary_img)
-        cv2.waitKey(0)
+        if DEBUG:
+            cv2.namedWindow("img_block_three_binary_img", cv2.WINDOW_NORMAL)
+            cv2.imshow('img_block_three_binary_img', img_block_three_binary_img)
+            cv2.waitKey(0)
 
         img_block_three_row_white_num = []  # 记录每一行的白色像素总和
         img_block_three_image_height = img_block_three_gen_img.shape[0]
@@ -267,16 +274,16 @@ def img_segmentation(initial_raw_img):
                                       final_img_block_three_row_index_list[2] + 10:
                                       final_img_block_three_row_index_list[3] - 10,
                                       0:img_block_three_width]
-
-        # cv2.namedWindow("img_block_three_block_one", cv2.WINDOW_NORMAL)
-        cv2.imshow('img_block_three_block_one', _img_block_three_block_one)
-        cv2.waitKey(0)
-        cv2.imshow('img_block_three_block_two', _img_block_three_block_two)
-        cv2.waitKey(0)
-        cv2.imshow('img_block_three_block_three', _img_block_three_block_three)
-        cv2.waitKey(0)
-        cv2.imshow('img_block_three_block_four', _img_block_three_block_four)
-        cv2.waitKey(0)
+        if DEBUG:
+            # cv2.namedWindow("img_block_three_block_one", cv2.WINDOW_NORMAL)
+            cv2.imshow('img_block_three_block_one', _img_block_three_block_one)
+            cv2.waitKey(0)
+            cv2.imshow('img_block_three_block_two', _img_block_three_block_two)
+            cv2.waitKey(0)
+            cv2.imshow('img_block_three_block_three', _img_block_three_block_three)
+            cv2.waitKey(0)
+            cv2.imshow('img_block_three_block_four', _img_block_three_block_four)
+            cv2.waitKey(0)
 
         return _img_block_three_block_one, _img_block_three_block_two, _img_block_three_block_three, \
             _img_block_three_block_four
@@ -289,9 +296,9 @@ def img_segmentation(initial_raw_img):
         gen_img = cv2.cvtColor(np.asarray(gen_raw_img), cv2.COLOR_RGB2BGR)  # 转换为OpenCV图片格式
         img_gray = cv2.cvtColor(gen_img, cv2.COLOR_BGR2GRAY)
         _, img_block_three_block_four_binary_img = cv2.threshold(img_gray, 127, 255, cv2.THRESH_BINARY)  # 得到二值图
-
-        cv2.imshow('img_block_three_block_four_binary_img', img_block_three_block_four_binary_img)
-        cv2.waitKey(0)
+        if DEBUG:
+            cv2.imshow('img_block_three_block_four_binary_img', img_block_three_block_four_binary_img)
+            cv2.waitKey(0)
         # img_block_three_block_four_binary_img = thresh_img
 
         img_three_col_four_row_height = img_block_three_block_four_binary_img.shape[0]
@@ -365,12 +372,12 @@ def img_segmentation(initial_raw_img):
                                      0:img_three_col_four_row_height,
                                      img_three_col_four_row_split_index[1] + 15:
                                      img_three_col_four_row_split_index[2] + 5]
-
-        # # cv2.namedWindow("img_block_three_block_one", cv2.WINDOW_NORMAL)
-        cv2.imshow('img_three_col_four_row_one', _img_three_col_four_row_one)
-        cv2.waitKey(0)
-        cv2.imshow('img_three_col_four_row_two', _img_three_col_four_row_two)
-        cv2.waitKey(0)
+        if DEBUG:
+            # # cv2.namedWindow("img_block_three_block_one", cv2.WINDOW_NORMAL)
+            cv2.imshow('img_three_col_four_row_one', _img_three_col_four_row_one)
+            cv2.waitKey(0)
+            cv2.imshow('img_three_col_four_row_two', _img_three_col_four_row_two)
+            cv2.waitKey(0)
 
         return _img_three_col_four_row_one, _img_three_col_four_row_two
 
@@ -383,9 +390,10 @@ def img_segmentation(initial_raw_img):
         img_gray = cv2.cvtColor(initial_img_two_one_binary_img, cv2.COLOR_BGR2GRAY)
         _, img_two_one_binary_img = cv2.threshold(img_gray, 127, 255, cv2.THRESH_BINARY)  # 得到二值图
 
-        cv2.namedWindow("img_two_one_binary_img", cv2.WINDOW_NORMAL)
-        cv2.imshow('img_two_one_binary_img', img_two_one_binary_img)
-        cv2.waitKey(0)
+        if DEBUG:
+            cv2.namedWindow("img_two_one_binary_img", cv2.WINDOW_NORMAL)
+            cv2.imshow('img_two_one_binary_img', img_two_one_binary_img)
+            cv2.waitKey(0)
 
         img_two_one_row_white_num = []  # 记录每一行的白色像素总和
         img_two_block_one_image_height = img_two_one_binary_img.shape[0]
@@ -622,17 +630,17 @@ def img_segmentation(initial_raw_img):
                                  img_two_one_row_index_list[4]:
                                  img_two_one_row_index_list[5] + 15,
                                  img_two_one_column_index_list[2]:img_two_one_column_index_list[3]]
-
-        cv2.imshow('_img_two_one_row_one', _img_two_one_row_one)
-        cv2.waitKey(0)
-        cv2.imshow('_img_top_left_panel', _img_top_left_panel)
-        cv2.waitKey(0)
-        cv2.imshow('_img_top_right_panel', _img_top_right_panel)
-        cv2.waitKey(0)
-        cv2.imshow('_img_lower_left_panel', _img_lower_left_panel)
-        cv2.waitKey(0)
-        cv2.imshow('_img_lower_right_panel', _img_lower_right_panel)
-        cv2.waitKey(0)
+        if DEBUG:
+            cv2.imshow('_img_two_one_row_one', _img_two_one_row_one)
+            cv2.waitKey(0)
+            cv2.imshow('_img_top_left_panel', _img_top_left_panel)
+            cv2.waitKey(0)
+            cv2.imshow('_img_top_right_panel', _img_top_right_panel)
+            cv2.waitKey(0)
+            cv2.imshow('_img_lower_left_panel', _img_lower_left_panel)
+            cv2.waitKey(0)
+            cv2.imshow('_img_lower_right_panel', _img_lower_right_panel)
+            cv2.waitKey(0)
 
         return _img_two_one_row_one, _img_top_left_panel, _img_top_right_panel, _img_lower_left_panel,\
             _img_lower_right_panel
@@ -666,8 +674,9 @@ def identify_panel_text(panel_text_input):
     gray = cv2.cvtColor(panel_text_input, cv2.COLOR_BGR2GRAY)  # 转化成灰度图
     sobel = cv2.Sobel(gray, cv2.CV_8U, 1, 0, ksize=1)  # Sobel算子，x方向求梯度
     ret, panel_text_binary_img = cv2.threshold(sobel, 0, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)  # 二值化
-    cv2.imshow('The binary row image for detection', panel_text_binary_img)
-    cv2.waitKey(0)
+    if DEBUG:
+        cv2.imshow('The binary row image for detection', panel_text_binary_img)
+        cv2.waitKey(0)
 
     column_white_num = []  # 记录每一列的白色像素总和
     column_black_num = []  # ..........黑色.......
@@ -836,8 +845,9 @@ def detect_row_img_color(image):
         # 依照红色字体对应亮度进行二值化处理
         # 因为传入的是切割过后的行图像
         # 为了区分红色与灰色，不能再直接传原图，而是传转换到LAB空间处理过的图
-        cv2.imshow("the raw red img input", img)
-        cv2.waitKey(0)
+        if DEBUG:
+            cv2.imshow("the raw red img input", img)
+            cv2.waitKey(0)
 
         red_img_lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
 
@@ -854,9 +864,9 @@ def detect_row_img_color(image):
 
         mask_lab = cv2.inRange(red_img_lab, min_lab, max_lab)
         filter_for_red_img = cv2.bitwise_and(red_img_lab, red_img_lab, mask=mask_lab)
-
-        cv2.imshow("the changed red img input", filter_for_red_img)
-        cv2.waitKey(0)
+        if DEBUG:
+            cv2.imshow("the changed red img input", filter_for_red_img)
+            cv2.waitKey(0)
         final_binary_img = gen_thresh_img(filter_for_red_img, threshold=65, mode='dynamic')
 
     elif check_color(detect_img_submodule(img, bgr_light_blue)):
@@ -883,8 +893,8 @@ def detect_row_img_color(image):
 
 
 if __name__ == '__main__':
-    for name_index in range(103, 115, 1):
-        input_image = "../Image/" + str(name_index) + ".png"
+    for name_index in range(2627, 2734, 1):
+        input_image = "../Image/DSCF" + str(name_index) + ".JPG"
         # input_image = "../Image/panel_text_1.jpg"
         compressed_img, compressed_opencv_img = img_compression(input_image)
         # compressed_img = img_compression(initial_img_address=input_image)
