@@ -1,10 +1,13 @@
 # _*_coding:utf-8
-from PIL import Image
-import numpy as np
-import cv2
 import os
 
+import cv2
+import numpy as np
+from PIL import Image
+
 DEBUG = False
+
+
 def img_compression(input_image_address):
     img_to_compress = Image.open(input_image_address)
     img_width, img_height = img_to_compress.size
@@ -286,7 +289,7 @@ def img_segmentation(initial_raw_img):
             cv2.waitKey(0)
 
         return _img_block_three_block_one, _img_block_three_block_two, _img_block_three_block_three, \
-            _img_block_three_block_four
+               _img_block_three_block_four
 
     def img_block_three_block_four_split(img_block_three_block_four_input):
 
@@ -364,14 +367,14 @@ def img_segmentation(initial_raw_img):
         img_three_col_four_row_split_index.sort()
         # 完成右下角图像块行切割
         _img_three_col_four_row_one = img_block_three_block_four_input[
-                                     0:img_three_col_four_row_height,
-                                     img_three_col_four_row_split_index[0] - 5:
-                                     img_three_col_four_row_split_index[1] + 15]
+                                      0:img_three_col_four_row_height,
+                                      img_three_col_four_row_split_index[0] - 5:
+                                      img_three_col_four_row_split_index[1] + 15]
 
         _img_three_col_four_row_two = img_block_three_block_four_input[
-                                     0:img_three_col_four_row_height,
-                                     img_three_col_four_row_split_index[1] + 15:
-                                     img_three_col_four_row_split_index[2] + 5]
+                                      0:img_three_col_four_row_height,
+                                      img_three_col_four_row_split_index[1] + 15:
+                                      img_three_col_four_row_split_index[2] + 5]
         if DEBUG:
             # # cv2.namedWindow("img_block_three_block_one", cv2.WINDOW_NORMAL)
             cv2.imshow('img_three_col_four_row_one', _img_three_col_four_row_one)
@@ -642,8 +645,8 @@ def img_segmentation(initial_raw_img):
             cv2.imshow('_img_lower_right_panel', _img_lower_right_panel)
             cv2.waitKey(0)
 
-        return _img_two_one_row_one, _img_top_left_panel, _img_top_right_panel, _img_lower_left_panel,\
-            _img_lower_right_panel
+        return _img_two_one_row_one, _img_top_left_panel, _img_top_right_panel, _img_lower_left_panel, \
+               _img_lower_right_panel
 
     initial_img_block_one, initial_img_block_two, initial_img_block_three = img_column_split(initial_raw_img)
 
@@ -659,9 +662,9 @@ def img_segmentation(initial_raw_img):
         img_block_three_block_four_split(img_block_three_block_four)
 
     return initial_img_block_one, img_two_one_row_one, img_top_left_panel, \
-        img_top_right_panel, img_lower_left_panel, img_lower_right_panel, initial_img_block_two_block_two, \
-        img_block_three_block_one, img_block_three_block_two, img_block_three_block_three, \
-        img_three_col_four_row_one, img_three_col_four_row_two
+           img_top_right_panel, img_lower_left_panel, img_lower_right_panel, initial_img_block_two_block_two, \
+           img_block_three_block_one, img_block_three_block_two, img_block_three_block_three, \
+           img_three_col_four_row_one, img_three_col_four_row_two
 
 
 def identify_panel_text(panel_text_input):
@@ -903,8 +906,8 @@ if __name__ == '__main__':
         # compressed_img = img_compression(initial_img_address=input_image)
         try:
             img_one, img_two_one_row_one, img_top_left_panel, img_top_right_panel, img_lower_left_panel, \
-                img_lower_right_panel, img_two_two, img_three_one, img_three_two, img_three_three, img_three_four_one, \
-                img_three_four_two = img_segmentation(compressed_img)
+            img_lower_right_panel, img_two_two, img_three_one, img_three_two, img_three_three, img_three_four_one, \
+            img_three_four_two = img_segmentation(compressed_img)
         except ValueError:
             continue
 
