@@ -985,11 +985,16 @@ def detect_row_img_color(image):
 
 if __name__ == '__main__':
     save_img_index = Counter()
-    for img_index in range(2627, 2734):
+    for img_index in range(2580, 2627):
         input_image = INPUT_IMG_ADDRESS + "DSCF" + str(img_index) + "/img_two_two.jpg"
-        raw_img = cv2.imread(input_image)
-        char_split(raw_img)
+        # print(input_image)
+        try:
+            raw_img = cv2.imread(input_image)
+        except FileNotFoundError:
+            print('file not found')
+            continue
+        try:
+            char_split(raw_img)
+        except AttributeError:
+            continue
 
-    # input_image = "../Img_processed/1/img_two_two.jpg"
-    # raw_img = cv2.imread(input_image)
-    # char_split(raw_img)

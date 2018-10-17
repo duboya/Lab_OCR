@@ -893,14 +893,20 @@ def detect_row_img_color(image):
 
 
 if __name__ == '__main__':
-    for name_index in range(2627, 2734, 1):
+    # for name_index in range(2627, 2734, 1):
+    for name_index in range(2601, 2627):
         input_image = "../Image/DSCF" + str(name_index) + ".JPG"
-        # input_image = "../Image/panel_text_1.jpg"
-        compressed_img, compressed_opencv_img = img_compression(input_image)
+        try:
+            compressed_img, compressed_opencv_img = img_compression(input_image)
+        except FileNotFoundError:
+            continue
         # compressed_img = img_compression(initial_img_address=input_image)
-        img_one, img_two_one_row_one, img_top_left_panel, img_top_right_panel, img_lower_left_panel, \
-            img_lower_right_panel, img_two_two, img_three_one, img_three_two, img_three_three, img_three_four_one, \
-            img_three_four_two = img_segmentation(compressed_img)
+        try:
+            img_one, img_two_one_row_one, img_top_left_panel, img_top_right_panel, img_lower_left_panel, \
+                img_lower_right_panel, img_two_two, img_three_one, img_three_two, img_three_three, img_three_four_one, \
+                img_three_four_two = img_segmentation(compressed_img)
+        except ValueError:
+            continue
 
         target_folder_base = "C:/Users/dby_freedom/Desktop/Lab_OCR/Img_processed/"
         folder_name = (os.path.basename(input_image)).split(".")[0]
