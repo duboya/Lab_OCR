@@ -56,7 +56,7 @@ def resize_to_fit(image, width, height):
 LETTER_IMAGES_FOLDER = "extracted_letter_images"
 MODEL_FILENAME = "captcha_model.hdf5"
 MODEL_LABELS_FILENAME = "model_labels.dat"
-
+DEBUG = True
 # initialize the data and labels
 data = []
 labels = []
@@ -69,7 +69,8 @@ for image_file in paths.list_images(LETTER_IMAGES_FOLDER):
 
     # Resize the letter so it fits in a 20x20 pixel box
     image = resize_to_fit(image, 20, 20)
-
+    if DEBUG:
+        print(image.shape)
     # Add a third channel dimension to the image to make Keras happy
     image = np.expand_dims(image, axis=2)
 

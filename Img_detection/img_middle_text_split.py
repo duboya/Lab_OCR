@@ -902,11 +902,11 @@ def detect_row_img_color(image):
 
     # 判定红色字体
     if check_color(detect_img_submodule(img, bgr_red, thresh_red=60)):
-        print('This row image is red')
         # 依照红色字体对应亮度进行二值化处理
         # 因为传入的是切割过后的行图像
         # 为了区分红色与灰色，不能再直接传原图，而是传转换到LAB空间处理过的图
         if DEBUG:
+            print('This row image is red')
             cv2.imshow("the raw red img input", img)
             cv2.waitKey(0)
 
